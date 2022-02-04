@@ -1,0 +1,144 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /v1/files:
+    get:
+      tags:
+      - video-file-controller
+      description: List uploaded files
+      operationId: list
+      responses:
+        "200":
+          description: File list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  allOf:
+                  - $ref: '#/components/schemas/VideoFileListView'
+              examples:
+                List of Items:
+                  description: List of Items
+                  value:
+                  - fileid: 61fd4a7a4210464bb110f0f7
+                    name: sample-5s.mp4
+                    size: "2848208"
+                    created_at: 2022-02-04T15:47:06.974973300
+    post:
+      tags:
+      - video-file-controller
+      description: Upload a video file
+      operationId: create
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: file detail
+                  format: binary
+      responses:
+        "201":
+          description: File uploaded
+          content:
+            '*/*':
+              schema:
+                type: string
+        "415":
+          description: Unsupported Media Type
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad request
+          content:
+            '*/*':
+              schema:
+                type: string
+        "409":
+          description: File exists
+          content:
+            '*/*':
+              schema:
+                type: string
+  /v1/files/{fileid}:
+    get:
+      tags:
+      - video-file-controller
+      description: Download a video file by fileid. The file name will be restored
+        as it was when you uploaded it.
+      operationId: get
+      parameters:
+      - name: fileid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: File not found
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+            video/mpeg:
+              schema:
+                type: string
+                format: binary
+        "200":
+          description: OK
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+    delete:
+      tags:
+      - video-file-controller
+      description: Delete a video file
+      operationId: delete
+      parameters:
+      - name: fileid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: File not found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "204":
+          description: File Removed Successfully
+          content:
+            '*/*':
+              schema:
+                type: string
+components:
+  schemas:
+    VideoFileListView:
+      type: object
+      properties:
+        fileid:
+          type: string
+        name:
+          type: string
+        size:
+          type: string
+        created_at:
+          type: string
