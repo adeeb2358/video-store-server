@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.DigestUtils;
@@ -29,8 +30,8 @@ class VideoFileServiceImplTest extends WithTestContainers {
   private static final String VIDEO_MPEG = "video/mpeg";
   private static final String DIR = WithTestContainers.DIR;
 
-  private MockMultipartFile createMultipartFile(String fileFormat) {
-    return new MockMultipartFile(NAME, FILE_NAME, fileFormat, "video".getBytes());
+  private MockMultipartFile createMultipartFile(String fileFormat,String content) {
+    return new MockMultipartFile(NAME, FILE_NAME, fileFormat, content.getBytes());
   }
 
   private void validateFile(VideoFile videoFile, MultipartFile multipartFile) throws IOException {
@@ -62,7 +63,7 @@ class VideoFileServiceImplTest extends WithTestContainers {
     @ValueSource(strings = {VIDEO_MPEG, VIDEO_MP_4})
     @DisplayName("Succeeds on valid file saving")
     void succeedsOnValidFile(String fileFormat) throws InvalidFileFormatException, IOException {
-      var multipartFile = createMultipartFile(fileFormat);
+      var multipartFile = createMultipartFile(fileFormat,"video");
       var result = service.create(multipartFile);
       validateFile(result, multipartFile);
     }
@@ -81,7 +82,7 @@ class VideoFileServiceImplTest extends WithTestContainers {
     @DisplayName("Fails on invalid file formats")
     void failsOnInValidFileFormats(String fileFormat)
         throws InvalidFileFormatException, IOException {
-      var multipartFile = createMultipartFile(fileFormat);
+      var multipartFile = createMultipartFile(fileFormat,"video");
       Assertions.assertThrows(
           InvalidFileFormatException.class, () -> service.create(multipartFile));
     }
@@ -89,7 +90,7 @@ class VideoFileServiceImplTest extends WithTestContainers {
     @Test
     @DisplayName("Fails on duplicate files")
     void failsOnDuplicateFiles() throws InvalidFileFormatException, IOException {
-      var multipartFile = createMultipartFile(VIDEO_MPEG);
+      var multipartFile = createMultipartFile(VIDEO_MPEG,"video");
       var result = service.create(multipartFile);
       Assertions.assertThrows(
           FileAlreadyExistsException.class, () -> service.create(multipartFile));
@@ -102,7 +103,7 @@ class VideoFileServiceImplTest extends WithTestContainers {
     @Test
     @DisplayName("Succeeds when file id is valid")
     void whenFileIsValid() throws InvalidFileFormatException, IOException {
-      var multipartFile = createMultipartFile(VIDEO_MPEG);
+      var multipartFile = createMultipartFile(VIDEO_MPEG,"video");
       var result = service.create(multipartFile);
       var getResult = service.get(result.getId());
       validateFileContents(result, getResult);
@@ -119,7 +120,21 @@ class VideoFileServiceImplTest extends WithTestContainers {
 
   @Nested
   @DisplayName("List Video Files")
-  class list {}
+  class list {
+    @Test
+    @DisplayName("Succeeds on listing items")
+    void succeedsOnListing() throws InvalidFileFormatException, IOException {
+      var multipartFileOne = createMultipartFile(VIDEO_MPEG,"videOne");
+      var resultOne = service.create(multipartFileOne);
+      var multipartFileTwo = createMultipartFile(VIDEO_MP_4,"videoTwo");
+      var resultTwo = service.create(multipartFileTwo);
+
+      var videoFileList = service.list();
+      Assertions.assertEquals(videoFileList.size(), 2);
+      validateFileContents(resultOne, videoFileList.get(0));
+      validateFileContents(resultTwo, videoFileList.get(1));
+    }
+  }
 
   @Nested
   @DisplayName("Delete Video File")
@@ -127,7 +142,7 @@ class VideoFileServiceImplTest extends WithTestContainers {
     @Test
     @DisplayName("Succeeds on valid file")
     void deleteSucceeds() throws InvalidFileFormatException, IOException {
-      var multipartFile = createMultipartFile(VIDEO_MPEG);
+      var multipartFile = createMultipartFile(VIDEO_MPEG,"video");
       var result = service.create(multipartFile);
       Assertions.assertEquals(result.getId(), service.delete(result.getId()));
     }
