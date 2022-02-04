@@ -120,4 +120,10 @@ class FileUtilsTest {
       Assertions.assertThrows(NullPointerException.class, () -> Reader.read(null));
     }
   }
+
+  @Nested
+  @DisplayName("Verification of binary content of the video file")
+  class validate {
+
+  }
 }
