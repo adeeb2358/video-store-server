@@ -16,10 +16,11 @@ import woven.video.storage.server.api.documents.VideoFile;
 public class VideoFileView {
   public static ResponseEntity<String> deleteResponse(String fileId) {
     return new ResponseEntity<String>(
-        "File was successfully removed " + fileId, HttpStatus.NO_CONTENT);
+        "File Removed Successfully. fileId:" + fileId, HttpStatus.NO_CONTENT);
   }
 
   public static ResponseEntity<String> createResponse(VideoFile videoFile) {
-    return new ResponseEntity<String>("File Uploaded " + videoFile.getId(), HttpStatus.CREATED);
+    return new ResponseEntity<String>(
+        "File Uploaded Successfully. fileId:" + videoFile.getId(), HttpStatus.CREATED);
   }
 }
