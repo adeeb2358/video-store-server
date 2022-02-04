@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -64,16 +63,12 @@ public class VideoFileController {
         @ApiResponse(responseCode = "409", description = "File exists"),
         @ApiResponse(responseCode = "415", description = "Unsupported Media Type")
       })
-  @PostMapping(path="",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-  )
-
+  @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<String> create(
       @Parameter(description = "file detail") @Valid @RequestPart("file") MultipartFile file)
       throws IOException, InvalidFileFormatException {
-    service.create(file);
-    return VideoFileView.getCreateResponse();
+    return VideoFileView.createResponse(service.create(file));
   }
 
   @Operation(
@@ -82,7 +77,7 @@ public class VideoFileController {
       tags = {})
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "204", description = "File was successfully removed"),
+        @ApiResponse(responseCode = "204", description = "File was successfully removed" ),
         @ApiResponse(responseCode = "404", description = "File not found")
       })
   @DeleteMapping("/{fileid}")
@@ -92,8 +87,7 @@ public class VideoFileController {
           @NotBlank
           String fileid)
       throws IOException {
-    service.delete(fileid);
-    return VideoFileView.getDeleteResponse();
+    return VideoFileView.deleteResponse(service.delete(fileid));
   }
 
   @Operation(

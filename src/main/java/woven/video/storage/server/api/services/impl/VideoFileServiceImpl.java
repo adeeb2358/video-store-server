@@ -3,7 +3,6 @@ package woven.video.storage.server.api.services.impl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +22,7 @@ public class VideoFileServiceImpl implements VideoFileService {
   private final String VIDEO_STORE_DIR;
 
   @Override
-  public void create(MultipartFile file) throws InvalidFileFormatException, IOException {
+  public VideoFile create(MultipartFile file) throws InvalidFileFormatException, IOException {
 
     var checkSum = validateAndGetChecksum(file);
     var videoFile =
@@ -31,20 +30,20 @@ public class VideoFileServiceImpl implements VideoFileService {
             VideoFile.builder()
                 .checkSum(checkSum)
                 .format(file.getContentType())
-                .createdAt(LocalDate.now().toString())
                 .name(file.getOriginalFilename())
                 .size(String.valueOf(file.getSize()))
                 .build());
     videoFile.setFilePath(VIDEO_STORE_DIR + "/" + videoFile.getId());
     videoFile.save(file);
-    repository.save(videoFile);
+    return repository.save(videoFile);
   }
 
   @Override
-  public void delete(String fileId) throws IOException {
+  public String delete(String fileId) throws IOException {
     var videoFile = repository.findById(fileId).orElseThrow(FileNotFoundException::new);
     videoFile.delete();
     repository.delete(videoFile);
+    return fileId;
   }
 
   @Override

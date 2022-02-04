@@ -124,6 +124,33 @@ class FileUtilsTest {
   @Nested
   @DisplayName("Verification of binary content of the video file")
   class validate {
+    @ParameterizedTest
+    @ValueSource(strings = {"video/mp4", "video/mpeg"})
+    @DisplayName("Succeeds on validFileFormat")
+    void succeedsOnValidFileFormat(String fileFormat) throws IOException {
+      MockMultipartFile multipartFile =
+          new MockMultipartFile(NAME, FILE_NAME, fileFormat, "video".getBytes());
+      Saver.save(multipartFile, DIR + fileId.toString());
+      Assertions.assertEquals(true, FormatChecker.isFormatAccepted(multipartFile));
+    }
 
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+          "video/3gpp",
+          "video/quicktime",
+          "video/x-msvideo",
+          "txt",
+          "",
+          "audio/mp3",
+          "image/jpeg"
+        })
+    @DisplayName("fails on validFileFormat")
+    void failsOnInValidFileFormat(String fileFormat) throws IOException {
+      MockMultipartFile multipartFile =
+          new MockMultipartFile(NAME, FILE_NAME, fileFormat, "video".getBytes());
+      var result = Saver.save(multipartFile, DIR + fileId.toString());
+      Assertions.assertEquals(false, FormatChecker.isFormatAccepted(multipartFile));
+    }
   }
 }

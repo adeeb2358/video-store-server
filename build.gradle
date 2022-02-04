@@ -32,6 +32,7 @@ ext {
 testlogger {
     theme 'mocha' // project level
     slowThreshold 5000
+    showStandardStreams true
 }
 
 

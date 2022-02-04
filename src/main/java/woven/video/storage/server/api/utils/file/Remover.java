@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class Remover {
     public static void remove(String filePath) throws IOException {
-    var fileToDelete = new File( filePath);
+    var fileToDelete = new File(filePath);
     if (!fileToDelete.delete()) {
       throw new FileNotFoundException();
     }

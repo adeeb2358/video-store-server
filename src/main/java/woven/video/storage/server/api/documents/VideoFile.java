@@ -2,6 +2,7 @@ package woven.video.storage.server.api.documents;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -45,11 +46,12 @@ public class VideoFile {
   @NotNull String filePath;
 
   public void delete() throws IOException {
-    Remover.remove(this.id);
+    Remover.remove(this.filePath);
   }
 
   public void save(MultipartFile file) throws IOException {
     this.filePath = Saver.save(file, this.filePath);
+    this.setCreatedAt(LocalDateTime.now().toString());
   }
 
   public boolean isExists() {
