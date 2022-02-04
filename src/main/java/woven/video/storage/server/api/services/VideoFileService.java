@@ -12,9 +12,9 @@ import woven.video.storage.server.api.services.impl.VideoFileServiceImpl.Invalid
 public interface VideoFileService {
   void create(MultipartFile file) throws InvalidFileFormatException, IOException;
 
-  void delete(UUID fileId) throws IOException;
+  void delete(String fileId) throws IOException;
 
   List<VideoFile> list();
 
-  VideoFile get(UUID fileId) throws FileNotFoundException;
+  VideoFile get(String fileId) throws FileNotFoundException;
 }

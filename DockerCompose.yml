@@ -1,0 +1,46 @@
+version: '3.7'
+
+services:
+  restapi-challenge-network:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    ports:
+      - 8080:8080
+    environment:
+      DATASOURCE_URL: mongodb://user:password@mongo:27017
+      DATASOURCE_DATABASE: videostore
+      LOG_LEVEL: INFO
+      SWAGGER_ENABLED: 'true'
+    volumes:
+      - gradle_cache_api:/root/.gradle
+      - build_api:/app/build
+      - .:/app:cached
+
+
+  mongo:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: videostore
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/db:/data/db
+      - ./data/initdb:/docker-entrypoint-initdb.d
+
+  # Only for dev
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: user
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+
+volumes:
+  gradle_cache_api:
+  build_api:

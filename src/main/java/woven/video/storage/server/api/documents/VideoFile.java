@@ -49,7 +49,7 @@ public class VideoFile {
   }
 
   public void save(MultipartFile file) throws IOException {
-    this.filePath = Saver.save(file, this.id);
+    this.filePath = Saver.save(file, this.filePath);
   }
 
   public boolean isExists() {

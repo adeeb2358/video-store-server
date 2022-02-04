@@ -1,22 +1,22 @@
 package woven.video.storage.server.api.utils.file;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Paths;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 /** @author adeeb2358 */
-@Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Saver {
-  @Value("${woven.video.storage.server.api.storage.directory}")
-  private static String FILE_DIRECTORY;
+  private static String FILE_DIRECTORY = "video-store";
 
-  public static String save(MultipartFile file, String fileId) throws IOException {
-    String path = FILE_DIRECTORY + "/" + fileId;
-    file.transferTo(Paths.get(path));
-    return path;
+  public static String save(MultipartFile file, String filePath) throws IOException {
+    if (!new File(filePath).exists()) {
+      file.transferTo(Paths.get(filePath));
+      return filePath;
+    }
+    throw new FileAlreadyExistsException("");
   }
 }

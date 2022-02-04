@@ -17,6 +17,7 @@ import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +39,7 @@ import woven.video.storage.server.api.services.impl.VideoFileServiceImpl.Invalid
 /** @author adeeb2358 */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "files")
+@RequestMapping(path = "/v1/files")
 public class VideoFileController {
 
   private final VideoFileService service;
@@ -63,7 +64,10 @@ public class VideoFileController {
         @ApiResponse(responseCode = "409", description = "File exists"),
         @ApiResponse(responseCode = "415", description = "Unsupported Media Type")
       })
-  @PostMapping("/")
+  @PostMapping(path="",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+  )
+
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<String> create(
       @Parameter(description = "file detail") @Valid @RequestPart("file") MultipartFile file)
@@ -88,7 +92,7 @@ public class VideoFileController {
           @NotBlank
           String fileid)
       throws IOException {
-    service.delete(UUID.fromString(fileid));
+    service.delete(fileid);
     return VideoFileView.getDeleteResponse();
   }
 
@@ -115,7 +119,7 @@ public class VideoFileController {
           @PathVariable("fileid")
           String fileid)
       throws IOException {
-    return VideoFileDownloadView.from(service.get(UUID.fromString(fileid)));
+    return VideoFileDownloadView.from(service.get(fileid));
   }
 
   @Operation(
@@ -133,7 +137,7 @@ public class VideoFileController {
                     array = @ArraySchema(schema = @Schema(allOf = VideoFileListView.class))))
       })
   @RequestMapping(
-      value = "/files",
+      value = "",
       produces = {"application/json"},
       method = RequestMethod.GET)
   List<VideoFileListView> list() {
