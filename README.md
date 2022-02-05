@@ -1,21 +1,27 @@
 ## Woven Video Store Back End REST API
 
 This is a basic video storage API which has the following functionalities.
-1. Upload video files to the server 
-   >POST /v1/files
-2. Download Video files
-   >GET /v1/files/{fileid}
-3. Delete uploaded files.
-   > DELETE /v1/files/{fileid}
-4. List uploaded video files.
-   >GET /v1/files/{fileid} 
-   
+
+>#### REST End Points
+>
+>Version 1.0
+>
+>1. Upload video files to the server
+>   > POST /v1/files
+>2. Download Video files
+>   > GET /v1/files/{fileid}
+>3. Delete uploaded files.
+>   > DELETE /v1/files/{fileid}
+>4. List uploaded video files.
+>   > GET /v1/files/{fileid}
+
 Note: The application only accepts the following media format.
-  1. video/mpeg
-  2. video/mp4
+1. video/mpeg
+2. video/mp4
 
 Additional Notes:
-1. Uploaded Videos saved on the video-store/ directory 
+
+1. Uploaded Videos saved on the video-store/ directory
 2. Maximum File Upload Size : 5gb
 3. This version of the API is unauthorized
 4. List API not paginated.
@@ -30,23 +36,26 @@ Additional Notes:
 ## Building
 
 ### PreRequisites
+
 Install these on the build machine
+
 1. Open JDK15
 2. gradle 6.7.1 or greater
 
 ### Build
+
 Build the application with all test cases
 > sh ./build.sh
 
 ## Deploy
+
 Run the application
 > sh ./run.sh
 
 ## Technologies Used
+
 1. Spring Boot Framework 2.6.3
 2. MongoDB (Latest will be downloaded from docker repo)
 
-## Additional Pieces of software which gets deployed
-1. Mongo Express 
-  This is to manage the mongo db. 
-   [Click here after deployment](http://localhost:8081)
+> Mongo Express(this can be removed from the docker-compose) This is to manage the mongo db.
+[Click here after deployment](http://localhost:8081)
