@@ -3,15 +3,10 @@ package woven.video.storage.server.api.services.impl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import woven.video.storage.server.api.documents.VideoFile;
@@ -19,34 +14,36 @@ import woven.video.storage.server.api.repos.VideoFileRepository;
 import woven.video.storage.server.api.services.VideoFileService;
 import woven.video.storage.server.api.utils.file.FormatChecker;
 
-@Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 /** @author adeeb2358 */
 public class VideoFileServiceImpl implements VideoFileService {
 
   private final VideoFileRepository repository;
+  private final String VIDEO_STORE_DIR;
 
   @Override
-  public void create(MultipartFile file) throws InvalidFileFormatException, IOException {
+  public VideoFile create(MultipartFile file) throws InvalidFileFormatException, IOException {
 
-    var checkSum = validateFile(file);
+    var checkSum = validateAndGetChecksum(file);
     var videoFile =
-        VideoFile.builder()
-            .checkSum(checkSum)
-            .format(file.getContentType())
-            .createdAt(LocalDate.now().toString())
-            .name(file.getName())
-            .size(String.valueOf(file.getSize()))
-            .build();
+        repository.save(
+            VideoFile.builder()
+                .checkSum(checkSum)
+                .format(file.getContentType())
+                .name(file.getOriginalFilename())
+                .size(String.valueOf(file.getSize()))
+                .build());
+    videoFile.setFilePath(VIDEO_STORE_DIR + "/" + videoFile.getId());
     videoFile.save(file);
-    repository.save(videoFile);
+    return repository.save(videoFile);
   }
 
   @Override
-  public void delete(UUID fileId) throws IOException {
-    var videoFile = repository.findById(fileId.toString()).orElseThrow(FileNotFoundException::new);
+  public String delete(String fileId) throws IOException {
+    var videoFile = repository.findById(fileId).orElseThrow(FileNotFoundException::new);
     videoFile.delete();
     repository.delete(videoFile);
+    return fileId;
   }
 
   @Override
@@ -55,18 +52,19 @@ public class VideoFileServiceImpl implements VideoFileService {
   }
 
   @Override
-  public VideoFile get(UUID fileId) throws FileNotFoundException {
-    return repository.findById(fileId.toString()).orElseThrow(FileNotFoundException::new);
+  public VideoFile get(String fileId) throws FileNotFoundException {
+    return repository.findById(fileId).orElseThrow(FileNotFoundException::new);
   }
 
-  private String validateFile(MultipartFile file) throws InvalidFileFormatException, IOException {
+  private String validateAndGetChecksum(MultipartFile file)
+      throws InvalidFileFormatException, IOException {
     if (!FormatChecker.isFormatAccepted(file)) {
       throw new InvalidFileFormatException();
     }
     var checkSum = DigestUtils.md5DigestAsHex(file.getInputStream());
     var sameFileList = repository.findByCheckSum(checkSum);
     if (sameFileList.isPresent()) {
-      throw new FileAlreadyExistsException("");
+      throw new FileAlreadyExistsException(sameFileList.get().getId());
     }
     return checkSum;
   }

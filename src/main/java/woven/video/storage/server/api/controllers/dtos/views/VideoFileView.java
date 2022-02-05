@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import woven.video.storage.server.api.documents.VideoFile;
 
 /** @author adeeb2358 */
 @Getter
@@ -13,11 +14,13 @@ import org.springframework.http.ResponseEntity;
 @AllArgsConstructor
 @Builder
 public class VideoFileView {
-  public static ResponseEntity<String> getDeleteResponse() {
-    return new ResponseEntity<String>("File was successfully removed", HttpStatus.NO_CONTENT);
+  public static ResponseEntity<String> deleteResponse(String fileId) {
+    return new ResponseEntity<String>(
+        "File Removed Successfully. fileId:" + fileId, HttpStatus.NO_CONTENT);
   }
 
-  public static ResponseEntity<String> getCreateResponse() {
-    return new ResponseEntity<String>("File Uploaded", HttpStatus.CREATED);
+  public static ResponseEntity<String> createResponse(VideoFile videoFile) {
+    return new ResponseEntity<String>(
+        "File Uploaded Successfully. fileId:" + videoFile.getId(), HttpStatus.CREATED);
   }
 }

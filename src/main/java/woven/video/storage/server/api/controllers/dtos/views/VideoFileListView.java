@@ -26,7 +26,7 @@ public class VideoFileListView {
   String name;
 
   @JsonProperty("size")
-  Integer size;
+  String size;
 
   @JsonProperty("created_at")
   String createdAt;
@@ -35,7 +35,7 @@ public class VideoFileListView {
     return VideoFileListView.builder()
         .id(file.getId())
         .name(file.getName())
-        .size(Integer.getInteger(file.getSize()))
+        .size(file.getSize())
         .createdAt(file.getCreatedAt())
         .build();
   }
