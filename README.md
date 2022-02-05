@@ -53,6 +53,9 @@ Build the application with all test cases
 Run the application
 > sh ./run.sh
 
+### Client
+Click [here](client/README.md) to view the complete documentation of the client application.
+
 ## Technologies Used
 
 1. Spring Boot Framework 2.6.3
