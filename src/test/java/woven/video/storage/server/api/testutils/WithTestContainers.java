@@ -13,9 +13,9 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import woven.video.storage.server.api.repos.VideoFileRepository;
-import woven.video.storage.server.api.services.impl.VideoFileServiceImplConfig;
+import woven.video.storage.server.api.services.config.VideoFileServiceConfig;
 
-@Import(VideoFileServiceImplConfig.class)
+@Import(VideoFileServiceConfig.class)
 @SpringBootTest(properties = {"woven.video.storage.server.api.storage.directory=test-video-dir"})
 public class WithTestContainers {
   @Container static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");

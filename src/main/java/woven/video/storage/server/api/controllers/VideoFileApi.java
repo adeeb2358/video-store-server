@@ -34,15 +34,49 @@ public interface VideoFileApi {
 
   @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(
-      summary = "",
-      description = "Upload a video file",
-      tags = {})
+      summary = "Upload a video file",
+      description = "Upload video to the video store",
+      tags = {"file-store"})
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "201", description = "File uploaded"),
-        @ApiResponse(responseCode = "400", description = "Bad request"),
-        @ApiResponse(responseCode = "409", description = "File exists"),
-        @ApiResponse(responseCode = "415", description = "Unsupported Media Type")
+        @ApiResponse(
+            responseCode = "201",
+            description = "File uploaded",
+            content = {
+              @Content(
+                  mediaType = "text/plain; charset=us-ascii",
+                  examples = {
+                    @ExampleObject(
+                        name = "Response Message",
+                        value = "File Uploaded Successfully. fileId:61fd4a7a4210464bb110f0f7")
+                  })
+            }),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad request",
+            content = {
+              @Content(
+                  mediaType = "text/plain; charset=us-ascii",
+                  examples = {@ExampleObject(name = "Response Message", value = "Bad Request")})
+            }),
+        @ApiResponse(
+            responseCode = "409",
+            description = "File exists",
+            content = {
+              @Content(
+                  mediaType = "text/plain; charset=us-ascii",
+                  examples = {@ExampleObject(name = "Response Message", value = "File exists")})
+            }),
+        @ApiResponse(
+            responseCode = "415",
+            description = "Unsupported Media Type",
+            content = {
+              @Content(
+                  mediaType = "text/plain; charset=us-ascii",
+                  examples = {
+                    @ExampleObject(name = "Response Message", value = "Unsupported Media Type")
+                  })
+            })
       })
   @ResponseStatus(HttpStatus.CREATED)
   ResponseEntity<String> create(
@@ -51,13 +85,31 @@ public interface VideoFileApi {
 
   @DeleteMapping("/{fileid}")
   @Operation(
-      summary = "",
+      summary = "Remove an uploaded video file from the server",
       description = "Delete a video file",
-      tags = {})
+      tags = {"file-store"})
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "204", description = "File Removed Successfully"),
-        @ApiResponse(responseCode = "404", description = "File not found")
+        @ApiResponse(
+            responseCode = "204",
+            description = "File Removed Successfully",
+            content = {
+              @Content(
+                  mediaType = "text/plain; charset=us-ascii",
+                  examples = {
+                    @ExampleObject(
+                        name = "Response Message",
+                        value = "File Removed Successfully. fileId:61fd4a7a4210464bb110f0f7")
+                  })
+            }),
+        @ApiResponse(
+            responseCode = "404",
+            description = "File not found",
+            content = {
+              @Content(
+                  mediaType = "text/plain; charset=us-ascii",
+                  examples = {@ExampleObject(name = "Response Message", value = "File Not Found")})
+            })
       })
   ResponseEntity<String> delete(
       @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
@@ -67,19 +119,34 @@ public interface VideoFileApi {
       throws IOException;
 
   @Operation(
-      description =
-          "Download a video file by fileid. "
-              + "The file name will be restored as it was when you uploaded it.")
+      summary =
+          "Download a video file by fileid.The file "
+              + "name will be restored as it was when you uploaded it. ",
+      description = "Download a video file",
+      tags = {"file-store"})
   @ApiResponses(
       value = {
         @ApiResponse(
             responseCode = "200",
             description = "OK",
-            content =
-                @Content(
-                    mediaType = "video/mp4",
-                    schema = @Schema(implementation = Resource.class))),
-        @ApiResponse(responseCode = "404", description = "File not found")
+            content = {
+              @Content(
+                  mediaType = "video/mp4",
+                  examples = {@ExampleObject(name = "List of Items", value = "Binary Video File")},
+                  schema = @Schema(implementation = Resource.class)),
+              @Content(
+                  mediaType = "video/mpeg",
+                  examples = {@ExampleObject(name = "List of Items", value = "Binary Video File")},
+                  schema = @Schema(implementation = Resource.class))
+            }),
+        @ApiResponse(
+            responseCode = "404",
+            description = "File not found",
+            content = {
+              @Content(
+                  mediaType = "text/plain; charset=us-ascii",
+                  examples = {@ExampleObject(name = "Response Message", value = "File not found")})
+            })
       })
   @GetMapping(
       value = "/{fileid}",
@@ -91,9 +158,9 @@ public interface VideoFileApi {
       throws IOException;
 
   @Operation(
-      summary = "",
+      summary = "List all the uploaded files in the ",
       description = "List uploaded files",
-      tags = {})
+      tags = {"file-store"})
   @ApiResponses(
       value = {
         @ApiResponse(

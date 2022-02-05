@@ -64,7 +64,7 @@ public class VideoFileServiceImpl implements VideoFileService {
     var checkSum = DigestUtils.md5DigestAsHex(file.getInputStream());
     var sameFileList = repository.findByCheckSum(checkSum);
     if (sameFileList.isPresent()) {
-      throw new FileAlreadyExistsException("");
+      throw new FileAlreadyExistsException(sameFileList.get().getId());
     }
     return checkSum;
   }
