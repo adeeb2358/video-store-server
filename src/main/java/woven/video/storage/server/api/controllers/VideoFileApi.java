@@ -176,7 +176,7 @@ public interface VideoFileApi {
                               "[{\"fileid\":"
                                   + "\"61fd4a7a4210464bb110f0f7\",\"name\":"
                                   + "\"sample-5s.mp4\",\"size\":\"2848208\","
-                                  + "\"created_at\":\"2022-02-04T15:47:06.974973300\"}]")
+                                  + "\"created_at\":\"2022-02-05 22:12:12\"}]")
                     },
                     array = @ArraySchema(schema = @Schema(allOf = VideoFileListView.class))))
       })
