@@ -3,6 +3,7 @@ import os.path
 import magic
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
+from response_parser import ResponseParser
 
 import config
 from file_utils import FileUtils
@@ -40,7 +41,14 @@ class RestRequest:
         response = requests.session().get(self.UPLOAD_URL + '/' + file_id,
                                           stream=True)
         print('ResponseStatusCode:' + str(response.status_code))
-        FileUtils().save_file(response)
+        if response.status_code == 200:
+            FileUtils().save_file(response)
+        else:
+            print(response.text)
+
+    def list(self):
+        response = requests.session().get(self.UPLOAD_URL)
+        ResponseParser().print_table(response.text)
 
     def print_response(self, response):
         print('ResponseStatusCode:' + str(response.status_code))
