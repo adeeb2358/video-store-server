@@ -3,6 +3,7 @@ package woven.video.storage.server.api.services.impl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.text.ParseException;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.DigestUtils;
@@ -18,17 +18,17 @@ import org.springframework.web.multipart.MultipartFile;
 import woven.video.storage.server.api.documents.VideoFile;
 import woven.video.storage.server.api.services.VideoFileService;
 import woven.video.storage.server.api.services.impl.VideoFileServiceImpl.InvalidFileFormatException;
-import woven.video.storage.server.api.testutils.WithTestContainers;
+import woven.video.storage.server.api.testutils.WithTestSetup;
 
 @DisplayName("Video file  Service Test")
-class VideoFileServiceImplTest extends WithTestContainers {
+class VideoFileServiceImplTest extends WithTestSetup {
   @Autowired private VideoFileService service;
 
   private static final String FILE_NAME = "test-video.mp4";
   private static final String NAME = "test-video";
   private static final String VIDEO_MP_4 = "video/mp4";
   private static final String VIDEO_MPEG = "video/mpeg";
-  private static final String DIR = WithTestContainers.DIR;
+  private static final String DIR = WithTestSetup.DIR;
 
   private MockMultipartFile createMultipartFile(String fileFormat,String content) {
     return new MockMultipartFile(NAME, FILE_NAME, fileFormat, content.getBytes());
@@ -39,17 +39,19 @@ class VideoFileServiceImplTest extends WithTestContainers {
     Assertions.assertEquals(
         videoFile.getCheckSum(), DigestUtils.md5DigestAsHex(multipartFile.getBytes()));
     Assertions.assertEquals(videoFile.getFilePath(), DIR + videoFile.getId());
-    Assertions.assertTrue(!videoFile.getCreatedAt().isBlank());
+    Assertions.assertTrue(!videoFile.getCreatedAt().equals(null));
     Assertions.assertTrue(videoFile.getBinaryContent().isFile());
     Assertions.assertEquals(videoFile.getName(), multipartFile.getOriginalFilename());
     Assertions.assertEquals(videoFile.getFormat(), multipartFile.getContentType());
   }
 
-  private void validateFileContents(VideoFile videoFile, VideoFile searchResult) {
+  private void validateFileContents(VideoFile videoFile, VideoFile searchResult)
+          throws ParseException {
     Assertions.assertEquals(videoFile.getId(), searchResult.getId());
     Assertions.assertEquals(videoFile.getCheckSum(), searchResult.getCheckSum());
     Assertions.assertEquals(videoFile.getFilePath(), searchResult.getFilePath());
-    Assertions.assertEquals(videoFile.getCreatedAt(), searchResult.getCreatedAt());
+    Assertions.assertEquals(WithTestSetup.getDateTimeFormatted(videoFile.getCreatedAt()),
+            WithTestSetup.getDateTimeFormatted(searchResult.getCreatedAt()));
     Assertions.assertEquals(videoFile.getBinaryContent(), searchResult.getBinaryContent());
     Assertions.assertEquals(videoFile.getName(), searchResult.getName());
     Assertions.assertEquals(videoFile.getFormat(), searchResult.getFormat());
@@ -102,7 +104,7 @@ class VideoFileServiceImplTest extends WithTestContainers {
   class get {
     @Test
     @DisplayName("Succeeds when file id is valid")
-    void whenFileIsValid() throws InvalidFileFormatException, IOException {
+    void whenFileIsValid() throws InvalidFileFormatException, IOException, ParseException {
       var multipartFile = createMultipartFile(VIDEO_MPEG,"video");
       var result = service.create(multipartFile);
       var getResult = service.get(result.getId());
@@ -123,7 +125,7 @@ class VideoFileServiceImplTest extends WithTestContainers {
   class list {
     @Test
     @DisplayName("Succeeds on listing items")
-    void succeedsOnListing() throws InvalidFileFormatException, IOException {
+    void succeedsOnListing() throws InvalidFileFormatException, IOException, ParseException {
       var multipartFileOne = createMultipartFile(VIDEO_MPEG,"videOne");
       var resultOne = service.create(multipartFileOne);
       var multipartFileTwo = createMultipartFile(VIDEO_MP_4,"videoTwo");

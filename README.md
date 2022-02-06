@@ -41,6 +41,7 @@ Install these on the build machine
 
 1. Open JDK15
 2. gradle 6.7.1 or greater
+3. Docker 20.10.6 or greater
 
 ### Build
 
@@ -52,10 +53,14 @@ Build the application with all test cases
 Run the application
 > sh ./run.sh
 
+### Client
+Click [here](client/README.md) to view the complete documentation of the client application.
+
 ## Technologies Used
 
 1. Spring Boot Framework 2.6.3
 2. MongoDB (Latest will be downloaded from docker repo)
+3. MongoDB Test container used for running tests 
 
 > Mongo Express(this can be removed from the docker-compose) This is to manage the mongo db.
 [Click here after deployment](http://localhost:8081)

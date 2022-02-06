@@ -1,5 +1,7 @@
 package woven.video.storage.server.api.documents;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -20,7 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import woven.video.storage.server.api.utils.file.Remover;
 import woven.video.storage.server.api.utils.file.Saver;
 
-/** @author adeeb2358 */
+/**
+ * @author adeeb2358
+ */
 @Document
 @Getter
 @Setter
@@ -31,34 +35,37 @@ import woven.video.storage.server.api.utils.file.Saver;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VideoFile {
 
-  @Id String id;
+    @Id
+    String id;
 
-  @TextIndexed @NotBlank String name;
+    @TextIndexed
+    @NotBlank String name;
 
-  @NotNull String size;
+    @NotNull String size;
 
-  @NotNull String format;
+    @NotNull String format;
 
-  @NotNull String createdAt;
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @NotNull LocalDateTime createdAt;
 
-  @NotNull String checkSum;
+    @NotNull String checkSum;
 
-  @NotNull String filePath;
+    @NotNull String filePath;
 
-  public void delete() throws IOException {
-    Remover.remove(this.filePath);
-  }
+    public void delete() throws IOException {
+        Remover.remove(this.filePath);
+    }
 
-  public void save(MultipartFile file) throws IOException {
-    this.filePath = Saver.save(file, this.filePath);
-    this.setCreatedAt(LocalDateTime.now().toString());
-  }
+    public void save(MultipartFile file) throws IOException {
+        this.filePath = Saver.save(file, this.filePath);
+        this.setCreatedAt(LocalDateTime.now());
+    }
 
-  public boolean isExists() {
-    return new File(this.filePath).exists();
-  }
+    public boolean isExists() {
+        return new File(this.filePath).exists();
+    }
 
-  public File getBinaryContent() {
-    return new File(this.filePath);
-  }
+    public File getBinaryContent() {
+        return new File(this.filePath);
+    }
 }
