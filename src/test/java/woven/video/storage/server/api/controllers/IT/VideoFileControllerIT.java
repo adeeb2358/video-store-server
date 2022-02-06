@@ -26,119 +26,130 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import woven.video.storage.server.api.controllers.VideoFileController;
 import woven.video.storage.server.api.repos.VideoFileRepository;
-import woven.video.storage.server.api.testutils.WithTestContainers;
+import woven.video.storage.server.api.testutils.WithTestSetup;
 
 @AutoConfigureMockMvc
-class VideoFileControllerIT extends WithTestContainers {
+class VideoFileControllerIT extends WithTestSetup {
 
-  @Autowired private VideoFileController controller;
-  @Autowired MockMvc mockMvc;
-  @Autowired private VideoFileRepository repository;
+    @Autowired
+    private VideoFileController controller;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    private VideoFileRepository repository;
 
-  private static final String API_END_POINT = "/v1/files";
-  private static final String MP4_FILE_PATH = "test-video-files/test-file.mp4";
-  private static final String MPEG_FILE_PATH = "test-video-files/test-file.mpeg";
+    private static final String API_END_POINT = "/v1/files";
+    private static final String MP4_FILE_PATH = "test-video-files/test-file.mp4";
+    private static final String MPEG_FILE_PATH = "test-video-files/test-file.mpeg";
 
-  private File readVideoFile(String filePath) throws FileNotFoundException {
-    return new File(getClass().getClassLoader().getResource(filePath).getFile());
-  }
-
-  private MockMultipartFile createMultiPartFile(String filePath) throws IOException {
-    var file = readVideoFile(filePath);
-    return new MockMultipartFile(
-        "file",
-        Path.of(filePath).getFileName().toString(),
-        Files.probeContentType(Path.of(filePath)),
-        IOUtils.toByteArray(new FileInputStream(file)));
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {MP4_FILE_PATH, MPEG_FILE_PATH})
-  @DisplayName("Sequential operation of upload, delete,download and list")
-  void scenario(String filePath) throws Exception {
-    // upload a file
-    var multipartFile = createMultiPartFile(filePath);
-    var uploadResult = performUpload(multipartFile).andExpect(status().isCreated()).andReturn();
-    Assertions.assertTrue(
-        uploadResult.getResponse().getContentAsString().contains("File Uploaded Successfully"));
-    Assertions.assertEquals(repository.count(), 1);
-
-    // get one video file
-    var oneFile = repository.findAll().get(0);
-    var getResult = performGet(oneFile.getId()).andExpect(status().isOk()).andReturn();
-    Assertions.assertNotNull(getResult.getResponse().getContentAsString());
-
-    // list file
-    performList()
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].fileid", is(oneFile.getId())))
-        .andExpect(jsonPath("$[0].name", is(oneFile.getName())))
-        .andExpect(jsonPath("$[0].created_at", is(oneFile.getCreatedAt())))
-        .andExpect(jsonPath("$[0].size", is(oneFile.getSize())))
-        .andReturn();
-
-    // delete file from the server
-    var deleteResult = performDelete(oneFile.getId()).andExpect(status().isNoContent()).andReturn();
-    Assertions.assertTrue(
-        deleteResult.getResponse().getContentAsString().contains("File Removed Successfully"));
-  }
-
-  @Nested
-  @DisplayName("Upload Error Cases")
-  class upload {
-    @Test
-    @DisplayName("Fails when invalid file is uploaded")
-    void whenInvalidFileIsUploaded() throws Exception {
-      var multipartFile =
-          new MockMultipartFile("file", "INVALID_FILE", "INVALID_CONTENT_TYPE", "video".getBytes());
-      performUpload(multipartFile).andExpect(status().isUnsupportedMediaType());
+    private File readVideoFile(String filePath) throws FileNotFoundException {
+        return new File(getClass().getClassLoader().getResource(filePath).getFile());
     }
 
-    @Test
-    @DisplayName("Fails when duplicate file is uploaded")
-    void whenDuplicateFileIsUploaded() throws Exception {
-      performUpload(createMultiPartFile(MPEG_FILE_PATH)).andExpect(status().isCreated());
-      performUpload(createMultiPartFile(MPEG_FILE_PATH)).andExpect(status().isConflict());
+    private MockMultipartFile createMultiPartFile(String filePath) throws IOException {
+        var file = readVideoFile(filePath);
+        return new MockMultipartFile(
+                "file",
+                Path.of(filePath).getFileName().toString(),
+                Files.probeContentType(Path.of(filePath)),
+                IOUtils.toByteArray(new FileInputStream(file)));
     }
-  }
 
-  @Nested
-  @DisplayName("Delete Error case")
-  class delete {
-    @Test
-    @DisplayName("Fails when invalid file id is given")
-    void whenInvalidFileIdIsGiven() throws Exception {
-      performDelete("INVALID_ID").andExpect(status().isNotFound());
+    @ParameterizedTest
+    @ValueSource(strings = {MP4_FILE_PATH, MPEG_FILE_PATH})
+    @DisplayName("Sequential operation of upload, delete,download and list")
+    void scenario(String filePath) throws Exception {
+        // upload a file
+        var multipartFile = createMultiPartFile(filePath);
+        var uploadResult = performUpload(multipartFile).andExpect(status().isCreated()).andReturn();
+        Assertions.assertTrue(
+                uploadResult.getResponse().getContentAsString()
+                        .contains("File Uploaded Successfully"));
+        Assertions.assertEquals(repository.count(), 1);
+
+        // get one video file
+        var oneFile = repository.findAll().get(0);
+        var getResult = performGet(oneFile.getId()).andExpect(status().isOk()).andReturn();
+        Assertions.assertNotNull(getResult.getResponse().getContentAsString());
+
+        // list file
+        performList()
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].fileid", is(oneFile.getId())))
+                .andExpect(jsonPath("$[0].name", is(oneFile.getName())))
+                .andExpect(jsonPath("$[0].created_at",
+                        is(WithTestSetup.getDateTimeFormatted(oneFile.getCreatedAt()))))
+                .andExpect(jsonPath("$[0].size", is(oneFile.getSize())))
+                .andReturn();
+
+        // delete file from the server
+        var deleteResult = performDelete(oneFile.getId()).andExpect(status().isNoContent())
+                .andReturn();
+        Assertions.assertTrue(
+                deleteResult.getResponse().getContentAsString()
+                        .contains("File Removed Successfully"));
     }
-  }
 
-  @Nested
-  @DisplayName("Download Error case")
-  class get {
-    @Test
-    @DisplayName("Fails when invalid file id is given")
-    void whenInvalidFileIdIsGiven() throws Exception {
-      performGet("INVALID_ID").andExpect(status().isNotFound());
+    @Nested
+    @DisplayName("Upload Error Cases")
+    class upload {
+
+        @Test
+        @DisplayName("Fails when invalid file is uploaded")
+        void whenInvalidFileIsUploaded() throws Exception {
+            var multipartFile =
+                    new MockMultipartFile("file", "INVALID_FILE", "INVALID_CONTENT_TYPE",
+                            "video".getBytes());
+            performUpload(multipartFile).andExpect(status().isUnsupportedMediaType());
+        }
+
+        @Test
+        @DisplayName("Fails when duplicate file is uploaded")
+        void whenDuplicateFileIsUploaded() throws Exception {
+            performUpload(createMultiPartFile(MPEG_FILE_PATH)).andExpect(status().isCreated());
+            performUpload(createMultiPartFile(MPEG_FILE_PATH)).andExpect(status().isConflict());
+        }
     }
-  }
 
-  private ResultActions performUpload(MockMultipartFile file) throws Exception {
-    return mockMvc.perform(
-        MockMvcRequestBuilders.multipart(API_END_POINT)
-            .file(file)
-            .contentType(MediaType.MULTIPART_FORM_DATA));
-  }
+    @Nested
+    @DisplayName("Delete Error case")
+    class delete {
 
-  private ResultActions performGet(String fileId) throws Exception {
-    return mockMvc.perform(MockMvcRequestBuilders.get(API_END_POINT + "/" + fileId));
-  }
+        @Test
+        @DisplayName("Fails when invalid file id is given")
+        void whenInvalidFileIdIsGiven() throws Exception {
+            performDelete("INVALID_ID").andExpect(status().isNotFound());
+        }
+    }
 
-  private ResultActions performList() throws Exception {
-    return mockMvc.perform(
-        MockMvcRequestBuilders.get(API_END_POINT).contentType(MediaType.APPLICATION_JSON));
-  }
+    @Nested
+    @DisplayName("Download Error case")
+    class get {
 
-  private ResultActions performDelete(String fileId) throws Exception {
-    return mockMvc.perform(MockMvcRequestBuilders.delete(API_END_POINT + "/" + fileId));
-  }
+        @Test
+        @DisplayName("Fails when invalid file id is given")
+        void whenInvalidFileIdIsGiven() throws Exception {
+            performGet("INVALID_ID").andExpect(status().isNotFound());
+        }
+    }
+
+    private ResultActions performUpload(MockMultipartFile file) throws Exception {
+        return mockMvc.perform(
+                MockMvcRequestBuilders.multipart(API_END_POINT)
+                        .file(file)
+                        .contentType(MediaType.MULTIPART_FORM_DATA));
+    }
+
+    private ResultActions performGet(String fileId) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.get(API_END_POINT + "/" + fileId));
+    }
+
+    private ResultActions performList() throws Exception {
+        return mockMvc.perform(
+                MockMvcRequestBuilders.get(API_END_POINT).contentType(MediaType.APPLICATION_JSON));
+    }
+
+    private ResultActions performDelete(String fileId) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.delete(API_END_POINT + "/" + fileId));
+    }
 }
