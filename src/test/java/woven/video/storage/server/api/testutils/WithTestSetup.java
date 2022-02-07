@@ -15,54 +15,52 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
+import woven.video.storage.server.api.converters.configurations.ConverterConfiguration;
 import woven.video.storage.server.api.repos.VideoFileRepository;
 import woven.video.storage.server.api.services.config.VideoFileServiceConfig;
 
-@Import(VideoFileServiceConfig.class)
+@Import({VideoFileServiceConfig.class, ConverterConfiguration.class})
 @SpringBootTest(properties = {"woven.video.storage.server.api.storage.directory=test-video-dir"})
 public class WithTestSetup {
 
-    @Container
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
-    public static final String DIR = "test-video-dir/";
+  @Container static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
+  public static final String DIR = "test-video-dir/";
 
+  @DynamicPropertySource
+  static void setProperties(DynamicPropertyRegistry registry) {
+    registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+  }
 
-    @DynamicPropertySource
-    static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+  public static String getDateTimeFormatted(LocalDateTime datetime) throws ParseException {
+    var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    return datetime.format(formatter);
+  }
+
+  static {
+    mongoDBContainer.start();
+  }
+
+  @Autowired private VideoFileRepository videoFileRepository;
+
+  @BeforeEach
+  void setupTestDir() throws IOException {
+    var testDir = new File(DIR);
+    if (!testDir.exists()) {
+      testDir.mkdir();
+    } else {
+      FileUtils.cleanDirectory(testDir);
     }
+  }
 
-    public static String getDateTimeFormatted(LocalDateTime datetime) throws ParseException {
-        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return datetime.format(formatter);
-    }
+  @AfterEach
+  void cleanUp() throws IOException {
+    this.videoFileRepository.deleteAll();
+    cleanTestDir();
+  }
 
-    static {
-        mongoDBContainer.start();
-    }
-
-    @Autowired
-    private VideoFileRepository videoFileRepository;
-
-    @BeforeEach
-    void setupTestDir() throws IOException {
-        var testDir = new File(DIR);
-        if (!testDir.exists()) {
-            testDir.mkdir();
-        } else {
-            FileUtils.cleanDirectory(testDir);
-        }
-    }
-
-    @AfterEach
-    void cleanUp() throws IOException {
-        this.videoFileRepository.deleteAll();
-        cleanTestDir();
-    }
-
-    public static void cleanTestDir() throws IOException {
-        var testDir = new File(DIR);
-        FileUtils.cleanDirectory(testDir);
-        FileUtils.deleteDirectory(testDir);
-    }
+  public static void cleanTestDir() throws IOException {
+    var testDir = new File(DIR);
+    FileUtils.cleanDirectory(testDir);
+    FileUtils.deleteDirectory(testDir);
+  }
 }
