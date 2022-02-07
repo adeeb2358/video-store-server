@@ -18,7 +18,6 @@ services:
       - build_api:/app/build
       - .:/app:cached
 
-
   mongo:
     image: mongo:latest
     environment:

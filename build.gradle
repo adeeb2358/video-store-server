@@ -32,7 +32,7 @@ ext {
 testlogger {
     theme 'mocha' // project level
     slowThreshold 5000
-    showStandardStreams false
+    //showStandardStreams false
 }
 
 
@@ -61,6 +61,9 @@ dependencies {
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-hibernate5"
 
+    // video converter
+    compile group: 'ws.schild', name: 'jave-all-deps', version: '2.7.3'
+    compile group: 'ws.schild', name: 'jave-nativebin-linux64', version: '2.7.3'
 
 }
 
