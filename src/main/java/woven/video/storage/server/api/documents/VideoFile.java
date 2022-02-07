@@ -109,6 +109,13 @@ public class VideoFile {
     return new File(this.filePath);
   }
 
+  public String getNameWithOutExtension() {
+    if (this.name.indexOf(".") > 0) {
+      name = name.substring(0, name.lastIndexOf("."));
+    }
+    return name;
+  }
+
   public enum Status {
     PENDING,
     IN_PROGRESS,

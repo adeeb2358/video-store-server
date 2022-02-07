@@ -42,25 +42,14 @@ class VideoFileControllerIT extends WithTestSetup {
     private static final String MP4_FILE_PATH = "test-video-files/test-file.mp4";
     private static final String MPEG_FILE_PATH = "test-video-files/test-file.mpeg";
 
-    private File readVideoFile(String filePath) throws FileNotFoundException {
-        return new File(getClass().getClassLoader().getResource(filePath).getFile());
-    }
 
-    private MockMultipartFile createMultiPartFile(String filePath) throws IOException {
-        var file = readVideoFile(filePath);
-        return new MockMultipartFile(
-                "file",
-                Path.of(filePath).getFileName().toString(),
-                Files.probeContentType(Path.of(filePath)),
-                IOUtils.toByteArray(new FileInputStream(file)));
-    }
 
     @ParameterizedTest
     @ValueSource(strings = {MP4_FILE_PATH, MPEG_FILE_PATH})
     @DisplayName("Sequential operation of upload, delete,download and list")
     void scenario(String filePath) throws Exception {
         // upload a file
-        var multipartFile = createMultiPartFile(filePath);
+        var multipartFile = WithTestSetup.createMultiPartFile(filePath);
         var uploadResult = performUpload(multipartFile).andExpect(status().isCreated()).andReturn();
         Assertions.assertTrue(
                 uploadResult.getResponse().getContentAsString()

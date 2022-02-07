@@ -37,9 +37,14 @@ testlogger {
 
 
 dependencies {
+
     compileOnly 'com.fasterxml.jackson.core:jackson-core:2.11.1'
     compileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.11.1'
     compileOnly 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
+
+    // video converter
+    compile group: 'ws.schild', name: 'jave-all-deps', version: '2.7.3'
+    compile group: 'ws.schild', name: 'jave-nativebin-linux64', version: '2.7.3'
 
     implementation "org.springdoc:springdoc-openapi-ui:1.6.5"
     implementation "org.springframework.boot:spring-boot-starter-parent:2.4.0"
@@ -61,9 +66,7 @@ dependencies {
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-hibernate5"
 
-    // video converter
-    compile group: 'ws.schild', name: 'jave-all-deps', version: '2.7.3'
-    compile group: 'ws.schild', name: 'jave-nativebin-linux64', version: '2.7.3'
+
 
 }
 

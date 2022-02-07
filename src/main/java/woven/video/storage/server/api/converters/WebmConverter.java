@@ -20,7 +20,7 @@ import ws.schild.jave.MultimediaObject;
 @AllArgsConstructor
 /** @author adeeb2358 */
 public class WebmConverter {
-
+  private final String OUTPUT_FORMAT = "webm";
   private final Encoder encoder;
   private final VideoFileRepository repository;
 
@@ -31,6 +31,7 @@ public class WebmConverter {
       var targetFile = new File(videoFile.getConvertedFilePath());
       encodingAttributes.setAudioAttributes(new WebmAudioCodec().getCodec(multimediaObject));
       encodingAttributes.setVideoAttributes(new WebmVideoCodec().getCodec(multimediaObject));
+      encodingAttributes.setFormat(OUTPUT_FORMAT);
       encoder.encode(
           multimediaObject,
           targetFile,
