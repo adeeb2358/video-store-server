@@ -1,4 +1,4 @@
-package woven.video.storage.server.api.controllers.dtos.views;
+package woven.video.storage.server.api.controllers.dtos.views.files;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
@@ -22,7 +22,7 @@ import woven.video.storage.server.api.documents.VideoFile;
 @Setter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class VideoFileListView {
+public class FileListView {
 
     @JsonProperty("fileid")
     String id;
@@ -37,8 +37,8 @@ public class VideoFileListView {
     @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime createdAt;
 
-    public static VideoFileListView from(VideoFile file) {
-        return VideoFileListView.builder()
+    public static FileListView from(VideoFile file) {
+        return FileListView.builder()
                 .id(file.getId())
                 .name(file.getName())
                 .size(file.getSize())
