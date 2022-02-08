@@ -39,7 +39,7 @@ class VideoFileControllerIT extends WithTestSetup {
 
     @ParameterizedTest
     @ValueSource(strings = {MP4_FILE_PATH, MPEG_FILE_PATH})
-    @DisplayName("Sequential operation of upload, delete,download and list")
+    @DisplayName("Sequential operation of upload, delete,download and list IT")
     void scenario(String filePath) throws Exception {
         // upload a file
         var multipartFile = WithTestSetup.createMultiPartFile(filePath);
