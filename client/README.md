@@ -2,16 +2,19 @@
 
 > > A basic python client designed to do CRUD operation using the video server.
 
-> Operations
-> 1. Upload
-     >    > Upload files to the server
+> Operations Supported by the client
 
-> 2. Download
-     >    > Download file from the server
-> 3. List
-     >   > List all uploaded files
-> 4. Delete
-     >   > Delete one uploaded file
+1. Upload  (Upload files to the server)
+2. Download  (Download file from the server)
+3. List (List all uploaded files)
+4. Delete (Delete one uploaded file)
+5. downloadconverted (download converted file from the server)
+6. convertlist (list the converted file details)
+7. reconvert (convert the failed downloads)
+8. convert(convert the uploaded video file into webm format)
+
+> Note: For help execute the following command.
+> sh video-store.sh --help
 
 ### PreRequisites
 
