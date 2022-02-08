@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
-import woven.video.storage.server.api.controllers.dtos.views.VideoFileListView;
+import woven.video.storage.server.api.controllers.dtos.views.files.FileListView;
 import woven.video.storage.server.api.services.impl.VideoFileServiceImpl.InvalidFileFormatException;
 
 /** @author adeeb2358 */
@@ -178,11 +178,11 @@ public interface VideoFileApi {
                                   + "\"sample-5s.mp4\",\"size\":\"2848208\","
                                   + "\"created_at\":\"2022-02-05 22:12:12\"}]")
                     },
-                    array = @ArraySchema(schema = @Schema(allOf = VideoFileListView.class))))
+                    array = @ArraySchema(schema = @Schema(allOf = FileListView.class))))
       })
   @RequestMapping(
       value = "",
       produces = {"application/json"},
       method = RequestMethod.GET)
-  List<VideoFileListView> list();
+  List<FileListView> list();
 }

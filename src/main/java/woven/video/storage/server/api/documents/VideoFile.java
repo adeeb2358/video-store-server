@@ -23,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import woven.video.storage.server.api.utils.file.Remover;
 import woven.video.storage.server.api.utils.file.Saver;
 
-/** @author adeeb2358 */
+/**
+ * @author adeeb2358
+ */
 @Document
 @Getter
 @Setter
@@ -34,92 +36,99 @@ import woven.video.storage.server.api.utils.file.Saver;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VideoFile {
 
-  @Id String id;
+    @Id
+    String id;
 
-  @TextIndexed @NotBlank String name;
+    @TextIndexed
+    @NotBlank String name;
 
-  @NotNull String size;
+    @NotNull String size;
 
-  @NotNull String format;
+    @NotNull String format;
 
-  @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-  @NotNull
-  LocalDateTime createdAt;
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @NotNull
+    LocalDateTime createdAt;
 
-  @NotNull String checkSum;
+    @NotNull String checkSum;
 
-  @NotNull String filePath;
+    @NotNull String filePath;
 
-  @NotNull Status status;
+    @Builder.Default
+    @NotNull Status status = Status.NOT_CONVERTED;
 
-  @NotNull Double progress;
+    @NotNull Double progress;
 
-  @NotNull LocalDateTime conversionStartTime;
+    @NotNull LocalDateTime conversionStartTime;
 
-  @NotNull LocalDateTime conversionLastUpdated;
+    @NotNull LocalDateTime conversionLastUpdated;
 
-  @NotNull String failureMessage;
+    @NotNull String failureMessage;
 
-  public void conversionStarted() {
-    this.conversionStartTime = LocalDateTime.now();
-    this.progress = 0.0;
-    this.status = Status.PENDING;
-  }
-
-  public void conversionInProgress(Double progress) {
-    this.status = Status.IN_PROGRESS;
-    this.conversionLastUpdated = LocalDateTime.now();
-  }
-
-  public void conversionFinished() {
-    this.status = Status.FINISHED;
-    this.conversionLastUpdated = LocalDateTime.now();
-  }
-
-  public void conversionFailed(String message) {
-    this.status = Status.FAILED;
-    this.conversionLastUpdated = LocalDateTime.now();
-    this.failureMessage = message;
-  }
-
-  public void delete() throws IOException {
-    Remover.remove(this.filePath);
-  }
-
-  public void save(MultipartFile file) throws IOException {
-    this.filePath = Saver.save(file, this.filePath);
-    this.setCreatedAt(LocalDateTime.now());
-  }
-
-  public boolean isExists() {
-    return new File(this.filePath).exists();
-  }
-
-  public String getConvertedFilePath() {
-    var dir = Path.of(this.getFilePath()).getParent().toString();
-    var path = dir + "/converted/" + this.getId().toString();
-    return path;
-  }
-
-  public File getConvertedContent() {
-    return new File(this.getConvertedFilePath());
-  }
-
-  public File getBinaryContent() {
-    return new File(this.filePath);
-  }
-
-  public String getNameWithOutExtension() {
-    if (this.name.indexOf(".") > 0) {
-      name = name.substring(0, name.lastIndexOf("."));
+    public void conversionQueued() {
+        this.conversionStartTime = LocalDateTime.now();
+        this.progress = 0.0;
+        this.status = Status.QUEUED;
     }
-    return name;
-  }
 
-  public enum Status {
-    PENDING,
-    IN_PROGRESS,
-    FAILED,
-    FINISHED
-  }
+    public void conversionInProgress(Integer progress) {
+        this.status = Status.IN_PROGRESS;
+        this.conversionLastUpdated = LocalDateTime.now();
+    }
+
+    public void conversionFinished() {
+        this.status = Status.FINISHED;
+        this.conversionLastUpdated = LocalDateTime.now();
+    }
+
+    public void conversionFailed(String message) {
+        this.status = Status.FAILED;
+        this.conversionLastUpdated = LocalDateTime.now();
+        this.failureMessage = message;
+    }
+
+    public void delete() throws IOException {
+        Remover.remove(this.filePath);
+        if (!this.getStatus().equals(Status.NOT_CONVERTED)) {
+            Remover.remove(this.getConvertedFilePath());
+        }
+    }
+
+    public void save(MultipartFile file) throws IOException {
+        this.filePath = Saver.save(file, this.filePath);
+        this.setCreatedAt(LocalDateTime.now());
+    }
+
+    public boolean isExists() {
+        return new File(this.filePath).exists();
+    }
+
+    public String getConvertedFilePath() {
+        var dir = Path.of(this.getFilePath()).getParent().toString();
+        var path = dir + "/converted/" + this.getId().toString();
+        return path;
+    }
+
+    public File getConvertedContent() {
+        return new File(this.getConvertedFilePath());
+    }
+
+    public File getBinaryContent() {
+        return new File(this.filePath);
+    }
+
+    public String getConvertedName() {
+        if (this.name.indexOf(".") > 0) {
+            name = name.substring(0, name.lastIndexOf("."));
+        }
+        return name + "." + "webm";
+    }
+
+    public enum Status {
+        NOT_CONVERTED,
+        QUEUED,
+        IN_PROGRESS,
+        FAILED,
+        FINISHED
+    }
 }
