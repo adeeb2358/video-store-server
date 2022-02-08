@@ -46,7 +46,7 @@ public class FileConversionListView {
     public static FileConversionListView from(VideoFile file) {
         return FileConversionListView.builder()
                 .id(file.getId())
-                .name(file.getName())
+                .name(file.getConvertedName())
                 .progress(file.getProgress())
                 .status(file.getStatus())
                 .started_at(file.getConversionStartTime())

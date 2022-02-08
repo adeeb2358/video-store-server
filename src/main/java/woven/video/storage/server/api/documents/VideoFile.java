@@ -71,13 +71,15 @@ public class VideoFile {
         this.status = Status.QUEUED;
     }
 
-    public void conversionInProgress(Integer progress) {
+    public void conversionInProgress(Double progress) {
         this.status = Status.IN_PROGRESS;
+        this.progress = progress;
         this.conversionLastUpdated = LocalDateTime.now();
     }
 
     public void conversionFinished() {
         this.status = Status.FINISHED;
+        this.progress = 100.0;
         this.conversionLastUpdated = LocalDateTime.now();
     }
 

@@ -37,7 +37,8 @@ public class ConvertProgressListener implements EncoderProgressListener {
      */
     @Override
     public void progress(int permil) {
-        videofile.conversionInProgress(permil);
+        var progress = permil/10;
+        videofile.conversionInProgress((double) progress);
         webmConverter.saveProgress(videofile);
     }
 

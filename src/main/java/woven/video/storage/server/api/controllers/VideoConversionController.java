@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import woven.video.storage.server.api.controllers.dtos.views.conversions.FileConversionGetView;
+import woven.video.storage.server.api.controllers.dtos.views.conversions.FileConversionGetView.OperationNotCompletedException;
 import woven.video.storage.server.api.controllers.dtos.views.conversions.FileConversionListView;
 import woven.video.storage.server.api.controllers.dtos.views.conversions.FileConversionView;
-import woven.video.storage.server.api.controllers.dtos.views.conversions.FileConversionView.OperationNotCompletedException;
 import woven.video.storage.server.api.documents.VideoFile;
 import woven.video.storage.server.api.services.VideoConversionService;
 
@@ -43,7 +44,7 @@ public class VideoConversionController {
 
     @PostMapping(
             value = "/{fileid}")
-    public ResponseEntity<Resource> create(
+    public ResponseEntity<String> create(
             @Parameter(in = ParameterIn.PATH, required = true)
             @PathVariable("fileid") @NotBlank String fileId)
             throws FileNotFoundException, OperationNotSupportedException,
@@ -59,7 +60,7 @@ public class VideoConversionController {
                     String fileId)
             throws FileNotFoundException, OperationNotSupportedException,
             OperationNotCompletedException {
-        return FileConversionView.from(service.get(fileId));
+        return FileConversionGetView.from(service.get(fileId));
     }
 
     @GetMapping(value = "",
@@ -69,7 +70,7 @@ public class VideoConversionController {
     }
 
     @PutMapping(value = "/{fileid}", produces = {"application/json"})
-    public ResponseEntity<Resource> update(
+    public ResponseEntity<String> update(
             @Parameter(in = ParameterIn.PATH, required = true)
             @PathVariable("fileid") @NotBlank
                     String fileId)

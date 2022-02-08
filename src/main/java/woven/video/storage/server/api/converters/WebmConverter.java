@@ -50,9 +50,6 @@ public class WebmConverter {
     }
 
     public void saveProgress(VideoFile videoFile) {
-        System.out
-                .println(videoFile.getProgress() + "=>Time=>" + videoFile
-                        .getConversionLastUpdated());
         repository.save(videoFile);
     }
 }

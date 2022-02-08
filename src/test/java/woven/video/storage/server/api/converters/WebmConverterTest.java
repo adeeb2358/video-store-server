@@ -1,11 +1,13 @@
 package woven.video.storage.server.api.converters;
 
 import java.io.IOException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import woven.video.storage.server.api.documents.VideoFile.Status;
 import woven.video.storage.server.api.services.VideoFileService;
 import woven.video.storage.server.api.services.impl.VideoFileServiceImpl.InvalidFileFormatException;
 import woven.video.storage.server.api.testutils.WithTestSetup;
@@ -32,6 +34,11 @@ class WebmConverterTest extends WithTestSetup {
     void succeedsWhenProperInput(String filePath)
             throws EncoderException, IOException, InvalidFileFormatException {
         var videoFileOne = videoFileService.create(createMultiPartFile(filePath));
-        webmConverter.convert(videoFileOne);
+        var result = webmConverter.convert(videoFileOne);
+        Assertions.assertEquals(result.getStatus(), Status.FINISHED);
+        var convertedFile = videoFileOne.getConvertedContent();
+        Assertions.assertTrue(convertedFile.isFile());
+        Assertions.assertEquals(convertedFile.getName(), result.getId());
+        Assertions.assertEquals(result.getProgress(), 100.0);
     }
 }

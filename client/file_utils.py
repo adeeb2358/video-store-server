@@ -18,7 +18,6 @@ class FileUtils:
                 name = file_parts[0] + '(' + str(num) + ')'
                 save_file_name = name
                 num = num + 1
-                print(len(file_parts))
                 if len(file_parts) == 2:
                     save_file_name = save_file_name + '.' + file_parts[1]
         return save_file_name
