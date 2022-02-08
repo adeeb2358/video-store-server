@@ -1,4 +1,4 @@
-package woven.video.storage.server.api.controllers.dtos.views;
+package woven.video.storage.server.api.controllers.dtos.views.files;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import woven.video.storage.server.api.documents.VideoFile;
 @Setter
 @AllArgsConstructor
 @Builder
-public class VideoFileView {
+public class FileView {
   public static ResponseEntity<String> deleteResponse(String fileId) {
     return new ResponseEntity<String>(
         "File Removed Successfully. fileId:" + fileId, HttpStatus.NO_CONTENT);

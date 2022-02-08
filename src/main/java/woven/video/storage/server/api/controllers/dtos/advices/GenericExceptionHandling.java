@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import woven.video.storage.server.api.controllers.dtos.views.conversions.FileConversionGetView.OperationNotCompletedException;
 import woven.video.storage.server.api.services.impl.VideoFileServiceImpl.InvalidFileFormatException;
 
 /**
@@ -39,5 +40,10 @@ public class GenericExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<String> handle(Exception handled) {
         return new ResponseEntity<String>("Bad request", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OperationNotCompletedException.class)
+    ResponseEntity<String> handle(OperationNotCompletedException handled) {
+        return new ResponseEntity<String>(handled.getMessage(), handled.getHttpStatus());
     }
 }

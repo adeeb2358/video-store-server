@@ -9,7 +9,7 @@ import config
 from file_utils import FileUtils
 
 
-class RestRequest:
+class UploadRequest:
     def __init__(self):
         self.UPLOAD_URL = config.UPLOAD_URL
         self.mime = magic.Magic(mime=True)
