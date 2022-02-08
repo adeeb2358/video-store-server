@@ -1,0 +1,332 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /v1/file-conversion/{fileid}:
+    get:
+      tags:
+      - file-conversion
+      summary: Download a converted video file
+      description: Download a converted video file
+      operationId: get_1
+      parameters:
+      - name: fileid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Conversion finished
+          content:
+            BlobFile:
+              examples:
+                binary file:
+                  description: binary file
+                  value: blob webm file
+        "400":
+          description: Bad request
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: Bad Request
+        "404":
+          description: File does not exists
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File doesnot exists
+        "201":
+          description: Conversion started
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File Added to the conversion Queue. fileId:61fd4a7a4210464bb110f0f7
+    put:
+      tags:
+      - file-conversion
+      summary: ReConvert a failed video file
+      description: Convert the video file to webm format
+      operationId: update
+      parameters:
+      - name: fileid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad request
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: Bad Request
+        "404":
+          description: File does not exists
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File doesnot exists
+        "201":
+          description: Conversion started
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File Added to the conversion Queue. fileId:61fd4a7a4210464bb110f0f7
+        "200":
+          description: Conversion finished
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: Conversion finished
+    post:
+      tags:
+      - file-conversion
+      summary: Convert a video file
+      description: Convert the video file to webm format
+      operationId: create_1
+      parameters:
+      - name: fileid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad request
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: Bad Request
+        "404":
+          description: File does not exists
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File doesnot exists
+        "201":
+          description: Conversion started
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File Added to the conversion Queue. fileId:61fd4a7a4210464bb110f0f7
+        "200":
+          description: Conversion finished
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: Conversion finished
+  /v1/files:
+    get:
+      tags:
+      - file-store
+      summary: 'List all the uploaded files in the '
+      description: List uploaded files
+      operationId: list
+      responses:
+        "200":
+          description: File list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  allOf:
+                  - $ref: '#/components/schemas/FileListView'
+              examples:
+                List of Items:
+                  description: List of Items
+                  value:
+                  - fileid: 61fd4a7a4210464bb110f0f7
+                    name: sample-5s.mp4
+                    size: "2848208"
+                    created_at: 2022-02-05 22:12:12
+    post:
+      tags:
+      - file-store
+      summary: Upload a video file
+      description: Upload video to the video store
+      operationId: create
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: file detail
+                  format: binary
+      responses:
+        "201":
+          description: File uploaded
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File Uploaded Successfully. fileId:61fd4a7a4210464bb110f0f7
+        "400":
+          description: Bad request
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: Bad Request
+        "409":
+          description: File exists
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File exists
+        "415":
+          description: Unsupported Media Type
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: Unsupported Media Type
+  /v1/files/{fileid}:
+    get:
+      tags:
+      - file-store
+      summary: 'Download a video file by fileid.The file name will be restored as
+        it was when you uploaded it. '
+      description: Download a video file
+      operationId: get
+      parameters:
+      - name: fileid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: File not found
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File not found
+        "200":
+          description: OK
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+              examples:
+                List of Items:
+                  description: List of Items
+                  value: Binary Video File
+            video/mpeg:
+              schema:
+                type: string
+                format: binary
+              examples:
+                List of Items:
+                  description: List of Items
+                  value: Binary Video File
+    delete:
+      tags:
+      - file-store
+      summary: Remove an uploaded video file from the server
+      description: Delete a video file
+      operationId: delete
+      parameters:
+      - name: fileid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: File not found
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File Not Found
+        "204":
+          description: File Removed Successfully
+          content:
+            text/plain; charset=us-ascii:
+              examples:
+                Response Message:
+                  description: Response Message
+                  value: File Removed Successfully. fileId:61fd4a7a4210464bb110f0f7
+  /v1/file-conversion:
+    get:
+      tags:
+      - file-conversion
+      summary: List the information of all files passed for conversion
+      description: "Details of conversion status, file created and last updated date-time\
+        \ etc"
+      operationId: list_1
+      responses:
+        "200":
+          description: Conversion started
+          content:
+            text/plain; charset=us-ascii:
+              schema:
+                type: string
+                format: binary
+              examples:
+                Response Message:
+                  description: Response Message
+                  value:
+                  - fileid: 62026d24906dee32ce745503
+                    progress: 100.0
+                    status: FINISHED
+                    name: test-file.webm
+                    started_at: 2022-02-08 14:05:14
+                    last_updated_at: 2022-02-08 14:05:33
+components:
+  schemas:
+    FileListView:
+      type: object
+      properties:
+        fileid:
+          type: string
+        name:
+          type: string
+        size:
+          type: string
+        created_at:
+          type: string
+          format: date-time

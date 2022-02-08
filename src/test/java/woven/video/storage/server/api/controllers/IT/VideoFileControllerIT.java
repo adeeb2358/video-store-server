@@ -4,13 +4,6 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.apache.commons.compress.utils.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,6 +21,7 @@ import woven.video.storage.server.api.controllers.VideoFileController;
 import woven.video.storage.server.api.repos.VideoFileRepository;
 import woven.video.storage.server.api.testutils.WithTestSetup;
 
+@DisplayName("Sequential operation of upload, delete,download and list")
 @AutoConfigureMockMvc
 class VideoFileControllerIT extends WithTestSetup {
 
@@ -41,7 +35,6 @@ class VideoFileControllerIT extends WithTestSetup {
     private static final String API_END_POINT = "/v1/files";
     private static final String MP4_FILE_PATH = "test-video-files/test-file.mp4";
     private static final String MPEG_FILE_PATH = "test-video-files/test-file.mpeg";
-
 
 
     @ParameterizedTest

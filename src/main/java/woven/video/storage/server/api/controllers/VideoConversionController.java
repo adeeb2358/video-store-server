@@ -29,7 +29,7 @@ import woven.video.storage.server.api.services.VideoConversionService;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/v1/file-conversion")
-public class VideoConversionController {
+public class VideoConversionController implements VideoConversionApi {
 
     private final VideoConversionService service;
 
@@ -42,6 +42,7 @@ public class VideoConversionController {
                 .collect(Collectors.toList());
     }
 
+    @Override
     @PostMapping(
             value = "/{fileid}")
     public ResponseEntity<String> create(
@@ -52,6 +53,7 @@ public class VideoConversionController {
         return FileConversionView.from(service.create(fileId));
     }
 
+    @Override
     @GetMapping(
             value = "/{fileid}")
     public ResponseEntity<Resource> get(
@@ -63,12 +65,14 @@ public class VideoConversionController {
         return FileConversionGetView.from(service.get(fileId));
     }
 
+    @Override
     @GetMapping(value = "",
             produces = {"application/json"})
     public List<FileConversionListView> list() {
         return toViewList(service.list());
     }
 
+    @Override
     @PutMapping(value = "/{fileid}", produces = {"application/json"})
     public ResponseEntity<String> update(
             @Parameter(in = ParameterIn.PATH, required = true)
