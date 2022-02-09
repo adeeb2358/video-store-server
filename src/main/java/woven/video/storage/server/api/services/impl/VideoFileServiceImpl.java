@@ -16,6 +16,9 @@ import woven.video.storage.server.api.repos.VideoFileRepository;
 import woven.video.storage.server.api.services.VideoFileService;
 import woven.video.storage.server.api.utils.file.FormatChecker;
 
+/**
+ * The type Video file service.
+ */
 @RequiredArgsConstructor
 @Setter
 @Getter
@@ -73,6 +76,9 @@ public class VideoFileServiceImpl implements VideoFileService {
         return checkSum;
     }
 
+    /**
+     * The type Invalid file format exception.
+     */
     @AllArgsConstructor
     @Getter
     @Setter

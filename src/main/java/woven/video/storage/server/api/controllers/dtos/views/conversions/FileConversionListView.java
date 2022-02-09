@@ -14,6 +14,8 @@ import woven.video.storage.server.api.documents.VideoFile;
 import woven.video.storage.server.api.documents.VideoFile.Status;
 
 /**
+ * The type File conversion list view.
+ *
  * @author adeeb2358
  */
 @Builder
@@ -43,6 +45,12 @@ public class FileConversionListView {
     @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime updated_at;
 
+    /**
+     * From file conversion list view.
+     *
+     * @param file the file
+     * @return the file conversion list view
+     */
     public static FileConversionListView from(VideoFile file) {
         return FileConversionListView.builder()
                 .id(file.getId())

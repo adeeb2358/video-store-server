@@ -15,6 +15,9 @@ import ws.schild.jave.Encoder;
 import ws.schild.jave.EncodingAttributes;
 import ws.schild.jave.MultimediaObject;
 
+/**
+ * The type Webm converter.
+ */
 @Component
 @Getter
 @Setter
@@ -27,6 +30,12 @@ public class WebmConverter {
     private final Encoder encoder;
     private final VideoFileRepository repository;
 
+    /**
+     * Convert video file.
+     *
+     * @param videoFile the video file
+     * @return the video file
+     */
     public VideoFile convert(VideoFile videoFile) {
         try {
             var multimediaObject = new MultimediaObject(videoFile.getBinaryContent());
@@ -49,6 +58,11 @@ public class WebmConverter {
         return videoFile;
     }
 
+    /**
+     * Save progress.
+     *
+     * @param videoFile the video file
+     */
     public void saveProgress(VideoFile videoFile) {
         repository.save(videoFile);
     }

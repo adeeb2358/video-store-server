@@ -14,6 +14,8 @@ import lombok.experimental.FieldDefaults;
 import woven.video.storage.server.api.documents.VideoFile;
 
 /**
+ * The type File list view.
+ *
  * @author adeeb2358
  */
 @Builder
@@ -37,6 +39,12 @@ public class FileListView {
     @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime createdAt;
 
+    /**
+     * From file list view.
+     *
+     * @param file the file
+     * @return the file list view
+     */
     public static FileListView from(VideoFile file) {
         return FileListView.builder()
                 .id(file.getId())

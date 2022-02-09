@@ -8,6 +8,8 @@ import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
 
 /**
+ * The type Webm audio codec.
+ *
  * @author adeeb2358
  */
 @Setter
@@ -18,6 +20,13 @@ public class WebmAudioCodec {
     private static String WEBM_AUDIO_CODEC = "libopus";
     private static int DEFAULT_BIT_RATE = 10000;
 
+    /**
+     * Gets codec.
+     *
+     * @param multimediaObject the multimedia object
+     * @return the codec
+     * @throws EncoderException the encoder exception
+     */
     public AudioAttributes getCodec(MultimediaObject multimediaObject) throws EncoderException {
         var audioAttributes = new AudioAttributes();
         audioAttributes.setCodec(WEBM_AUDIO_CODEC);

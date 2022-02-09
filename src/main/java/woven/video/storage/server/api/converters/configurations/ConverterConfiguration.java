@@ -4,11 +4,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ws.schild.jave.Encoder;
 
-/** @author adeeb2358 */
+/**
+ * The type Converter configuration.
+ *
+ * @author adeeb2358
+ */
 @Configuration
 public class ConverterConfiguration {
 
-  @Bean
+    /**
+     * Gets encoder.
+     *
+     * @return the encoder
+     */
+    @Bean
   public Encoder getEncoder() {
     return new Encoder();
   }

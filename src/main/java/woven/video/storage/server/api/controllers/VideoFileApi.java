@@ -29,10 +29,22 @@ import org.springframework.web.multipart.MultipartFile;
 import woven.video.storage.server.api.controllers.dtos.views.files.FileListView;
 import woven.video.storage.server.api.services.impl.VideoFileServiceImpl.InvalidFileFormatException;
 
-/** @author adeeb2358 */
+/**
+ * The interface Video file api.
+ *
+ * @author adeeb2358
+ */
 public interface VideoFileApi {
 
-  @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    /**
+     * Create response entity.
+     *
+     * @param file the file
+     * @return the response entity
+     * @throws IOException                the io exception
+     * @throws InvalidFileFormatException the invalid file format exception
+     */
+    @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(
       summary = "Upload a video file",
       description = "Upload video to the video store",
@@ -83,7 +95,14 @@ public interface VideoFileApi {
       @Parameter(description = "file detail") @Valid @RequestPart("file") MultipartFile file)
       throws IOException, InvalidFileFormatException;
 
-  @DeleteMapping("/{fileid}")
+    /**
+     * Delete response entity.
+     *
+     * @param fileid the fileid
+     * @return the response entity
+     * @throws IOException the io exception
+     */
+    @DeleteMapping("/{fileid}")
   @Operation(
       summary = "Remove an uploaded video file from the server",
       description = "Delete a video file",
@@ -118,7 +137,14 @@ public interface VideoFileApi {
           String fileid)
       throws IOException;
 
-  @Operation(
+    /**
+     * Get response entity.
+     *
+     * @param fileid the fileid
+     * @return the response entity
+     * @throws IOException the io exception
+     */
+    @Operation(
       summary =
           "Download a video file by fileid.The file "
               + "name will be restored as it was when you uploaded it. ",
@@ -157,7 +183,12 @@ public interface VideoFileApi {
           String fileid)
       throws IOException;
 
-  @Operation(
+    /**
+     * List list.
+     *
+     * @return the list
+     */
+    @Operation(
       summary = "List all the uploaded files in the ",
       description = "List uploaded files",
       tags = {"file-store"})

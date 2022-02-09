@@ -10,6 +10,8 @@ import ws.schild.jave.EncoderProgressListener;
 import ws.schild.jave.MultimediaInfo;
 
 /**
+ * The type Convert progress listener.
+ *
  * @author adeeb2358
  */
 @AllArgsConstructor

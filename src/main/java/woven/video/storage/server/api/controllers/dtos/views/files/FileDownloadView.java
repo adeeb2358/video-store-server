@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import woven.video.storage.server.api.documents.VideoFile;
 
 /**
+ * The type File download view.
+ *
  * @author adeeb2358
  */
 @Builder
@@ -22,6 +24,12 @@ import woven.video.storage.server.api.documents.VideoFile;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FileDownloadView {
 
+    /**
+     * From response entity.
+     *
+     * @param file the file
+     * @return the response entity
+     */
     public static ResponseEntity<Resource> from(VideoFile file) {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,

@@ -7,10 +7,19 @@ import org.springframework.http.ResponseEntity;
 import woven.video.storage.server.api.documents.VideoFile;
 import woven.video.storage.server.api.documents.VideoFile.Status;
 
+/**
+ * The type File conversion view.
+ */
 @Getter
 @Setter
 public class FileConversionView {
 
+    /**
+     * From response entity.
+     *
+     * @param file the file
+     * @return the response entity
+     */
     public static ResponseEntity<String> from(VideoFile file) {
         String message = "Unknown error";
         HttpStatus status = HttpStatus.BAD_REQUEST;

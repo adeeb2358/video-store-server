@@ -8,18 +8,35 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import woven.video.storage.server.api.documents.VideoFile;
 
-/** @author adeeb2358 */
+/**
+ * The type File view.
+ *
+ * @author adeeb2358
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
 public class FileView {
-  public static ResponseEntity<String> deleteResponse(String fileId) {
+
+    /**
+     * Delete response response entity.
+     *
+     * @param fileId the file id
+     * @return the response entity
+     */
+    public static ResponseEntity<String> deleteResponse(String fileId) {
     return new ResponseEntity<String>(
         "File Removed Successfully. fileId:" + fileId, HttpStatus.NO_CONTENT);
   }
 
-  public static ResponseEntity<String> createResponse(VideoFile videoFile) {
+    /**
+     * Create response response entity.
+     *
+     * @param videoFile the video file
+     * @return the response entity
+     */
+    public static ResponseEntity<String> createResponse(VideoFile videoFile) {
     return new ResponseEntity<String>(
         "File Uploaded Successfully. fileId:" + videoFile.getId(), HttpStatus.CREATED);
   }

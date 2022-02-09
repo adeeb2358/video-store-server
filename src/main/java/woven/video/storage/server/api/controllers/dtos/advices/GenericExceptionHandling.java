@@ -11,17 +11,31 @@ import woven.video.storage.server.api.controllers.dtos.views.conversions.FileCon
 import woven.video.storage.server.api.services.impl.VideoFileServiceImpl.InvalidFileFormatException;
 
 /**
+ * The type Generic exception handling.
+ *
  * @author adeeb2358
  */
 @ControllerAdvice
 public class GenericExceptionHandling {
 
+    /**
+     * Handle response entity.
+     *
+     * @param handled the handled
+     * @return the response entity
+     */
     @ExceptionHandler(FileNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ResponseEntity<String> handle(FileNotFoundException handled) {
         return new ResponseEntity<String>("File not found", HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Handle response entity.
+     *
+     * @param handled the handled
+     * @return the response entity
+     */
     @ExceptionHandler(InvalidFileFormatException.class)
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     ResponseEntity<String> handle(InvalidFileFormatException handled) {
@@ -29,6 +43,12 @@ public class GenericExceptionHandling {
                 HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
+    /**
+     * Handle response entity.
+     *
+     * @param handled the handled
+     * @return the response entity
+     */
     @ExceptionHandler(FileAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     ResponseEntity<String> handle(FileAlreadyExistsException handled) {
@@ -36,12 +56,24 @@ public class GenericExceptionHandling {
                 HttpStatus.CONFLICT);
     }
 
+    /**
+     * Handle response entity.
+     *
+     * @param handled the handled
+     * @return the response entity
+     */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<String> handle(Exception handled) {
         return new ResponseEntity<String>("Bad request", HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handle response entity.
+     *
+     * @param handled the handled
+     * @return the response entity
+     */
     @ExceptionHandler(OperationNotCompletedException.class)
     ResponseEntity<String> handle(OperationNotCompletedException handled) {
         return new ResponseEntity<String>(handled.getMessage(), handled.getHttpStatus());

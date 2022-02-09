@@ -16,6 +16,8 @@ import woven.video.storage.server.api.documents.VideoFile;
 import woven.video.storage.server.api.documents.VideoFile.Status;
 
 /**
+ * The type File conversion get view.
+ *
  * @author adeeb2358
  */
 @Builder
@@ -25,6 +27,14 @@ import woven.video.storage.server.api.documents.VideoFile.Status;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FileConversionGetView {
 
+    /**
+     * From response entity.
+     *
+     * @param file the file
+     * @return the response entity
+     * @throws OperationNotSupportedException the operation not supported exception
+     * @throws OperationNotCompletedException the operation not completed exception
+     */
     public static ResponseEntity<Resource> from(VideoFile file)
             throws OperationNotSupportedException, OperationNotCompletedException {
         if (file.getStatus().equals(Status.FINISHED)) {
@@ -61,6 +71,9 @@ public class FileConversionGetView {
         return OperationNotCompletedException.from(message, status);
     }
 
+    /**
+     * The type Operation not completed exception.
+     */
     @AllArgsConstructor
     @Getter
     public static class OperationNotCompletedException extends Exception {
@@ -68,6 +81,13 @@ public class FileConversionGetView {
         private final String message;
         private final HttpStatus httpStatus;
 
+        /**
+         * From operation not completed exception.
+         *
+         * @param message    the message
+         * @param httpStatus the http status
+         * @return the operation not completed exception
+         */
         public static OperationNotCompletedException from(String message, HttpStatus httpStatus) {
             return new OperationNotCompletedException(message, httpStatus);
         }

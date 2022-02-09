@@ -12,6 +12,8 @@ import woven.video.storage.server.api.services.impl.VideoConversionServiceImpl;
 import woven.video.storage.server.api.services.impl.VideoFileServiceImpl;
 
 /**
+ * The type Video file service config.
+ *
  * @author adeeb2358
  */
 @Configuration
@@ -20,12 +22,23 @@ public class VideoFileServiceConfig {
     @Autowired
     private VideoFileRepository repository;
 
+    /**
+     * The Video store dir.
+     */
     @Value("${woven.video.storage.server.api.storage.directory}")
     String VIDEO_STORE_DIR;
 
+    /**
+     * The Thread pool size.
+     */
     @Value("${thread.maxpoolsize:100}")
     int THREAD_POOL_SIZE;
 
+    /**
+     * Video file service video file service.
+     *
+     * @return the video file service
+     */
     @Bean
     VideoFileService videoFileService() {
         return new VideoFileServiceImpl(repository, VIDEO_STORE_DIR);
@@ -34,6 +47,11 @@ public class VideoFileServiceConfig {
     @Autowired
     private WebmConverter webmConverter;
 
+    /**
+     * Video conversion service video conversion service.
+     *
+     * @return the video conversion service
+     */
     @Bean
     VideoConversionService videoConversionService() {
         return new VideoConversionServiceImpl(repository, webmConverter, this.THREAD_POOL_SIZE);

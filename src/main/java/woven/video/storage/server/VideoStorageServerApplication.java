@@ -4,12 +4,21 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-/** @author adeeb2358 */
+/**
+ * The type Video storage server application.
+ *
+ * @author adeeb2358
+ */
 @SpringBootApplication
 @EnableAsync
 public class VideoStorageServerApplication {
 
-  public static void main(String[] args) {
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
+    public static void main(String[] args) {
     SpringApplication.run(VideoStorageServerApplication.class, args);
   }
 }

@@ -22,7 +22,11 @@ import woven.video.storage.server.api.documents.VideoFile;
 import woven.video.storage.server.api.services.VideoFileService;
 import woven.video.storage.server.api.services.impl.VideoFileServiceImpl.InvalidFileFormatException;
 
-/** @author adeeb2358 */
+/**
+ * The type Video file controller.
+ *
+ * @author adeeb2358
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/v1/files")

@@ -12,6 +12,8 @@ import woven.video.storage.server.api.repos.VideoFileRepository;
 import woven.video.storage.server.api.services.VideoConversionService;
 
 /**
+ * The type Video conversion service.
+ *
  * @author adeeb2358
  */
 @RequiredArgsConstructor
@@ -55,6 +57,12 @@ public class VideoConversionServiceImpl implements VideoConversionService {
         return videoFile;
     }
 
+    /**
+     * Add to conversion thread.
+     *
+     * @param videoFile the video file
+     * @throws InterruptedException the interrupted exception
+     */
     public void addToConversionThread(VideoFile videoFile) throws InterruptedException {
         videoFile.conversionQueued();
         repository.save(videoFile);
@@ -63,6 +71,12 @@ public class VideoConversionServiceImpl implements VideoConversionService {
         exec.submit(task);
     }
 
+    /**
+     * Task for callable.
+     *
+     * @param videoFile the video file
+     * @return the callable
+     */
     public Callable<Boolean> taskFor(VideoFile videoFile) {
         return new Callable<Boolean>() {
             @Override

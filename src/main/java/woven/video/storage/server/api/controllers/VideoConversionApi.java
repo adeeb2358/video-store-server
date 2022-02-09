@@ -19,10 +19,22 @@ import woven.video.storage.server.api.controllers.dtos.views.conversions.FileCon
 import woven.video.storage.server.api.controllers.dtos.views.conversions.FileConversionListView;
 
 /**
+ * The interface Video conversion api.
+ *
  * @author adeeb2358
  */
 public interface VideoConversionApi {
 
+    /**
+     * Create response entity.
+     *
+     * @param fileId the file id
+     * @return the response entity
+     * @throws FileNotFoundException          the file not found exception
+     * @throws OperationNotSupportedException the operation not supported exception
+     * @throws OperationNotCompletedException the operation not completed exception
+     * @throws InterruptedException           the interrupted exception
+     */
     @Operation(
             summary = "Convert a video file",
             description = "Convert the video file to webm format",
@@ -83,6 +95,15 @@ public interface VideoConversionApi {
             throws FileNotFoundException, OperationNotSupportedException,
             OperationNotCompletedException, InterruptedException;
 
+    /**
+     * Get response entity.
+     *
+     * @param fileId the file id
+     * @return the response entity
+     * @throws FileNotFoundException          the file not found exception
+     * @throws OperationNotSupportedException the operation not supported exception
+     * @throws OperationNotCompletedException the operation not completed exception
+     */
     @Operation(
             summary = "Download a converted video file",
             description = "Download a converted video file",
@@ -144,6 +165,11 @@ public interface VideoConversionApi {
             throws FileNotFoundException, OperationNotSupportedException,
             OperationNotCompletedException;
 
+    /**
+     * List list.
+     *
+     * @return the list
+     */
     @Operation(
             summary = "List the information of all files passed for conversion",
             description = "Details of conversion status, file created and last updated date-time "
@@ -178,6 +204,16 @@ public interface VideoConversionApi {
             })
     public List<FileConversionListView> list();
 
+    /**
+     * Update response entity.
+     *
+     * @param fileId the file id
+     * @return the response entity
+     * @throws FileNotFoundException          the file not found exception
+     * @throws OperationNotSupportedException the operation not supported exception
+     * @throws OperationNotCompletedException the operation not completed exception
+     * @throws InterruptedException           the interrupted exception
+     */
     @Operation(
             summary = "ReConvert a failed video file",
             description = "Convert the video file to webm format",
