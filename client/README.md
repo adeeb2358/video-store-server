@@ -38,4 +38,4 @@ Run
 Note: REST End Point can be changed at video-store.sh
 
 
-> [Click here]() to VOWEN Video Storage REST API Docs
+> [Click here]() to Video Storage REST API Docs
