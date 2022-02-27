@@ -21,4 +21,4 @@ COPY --from=builder ${BUILD_SRC}/BOOT-INF/classes /app
 RUN addgroup -S javagroup && adduser -S javauser -G javagroup && \
     chown -R javauser:javagroup /app
 USER javauser
-ENTRYPOINT ["java", "-cp", "/app:/app/lib/*", "package woven.video.storage.server.VideoStorageServerApplication"]
+ENTRYPOINT ["java", "-cp", "/app:/app/lib/*", "package VideoStorageServerApplication"]
